@@ -1,8 +1,12 @@
 import Recipe from './models/Recipe';
 import Search from './models/Search';
+import List from './models/List';
 import { clearLoader, elements, renderLoader } from './views/base';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as listView from './views/listView';
+
+
 
 
 
@@ -60,6 +64,34 @@ const controlRecipe = async () => {
     }
 }
 
+// shopping List
+const controlList = () => {
+    // Create a new List
+    if(!state.list) state.list = new List();
+
+    listView.clearShoppingList();
+
+    // add each ingredient
+    state.recipe.ingredients.forEach(el => {
+        const item = state.list.addItems(el.count, el.unit, el.ingredient);
+        listView.renderItem(item);
+    });
+}
+
+//Handle delete and update list item events
+elements.shopping.addEventListener('click', e => {
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+
+    if(e.target.matches('.shopping__delete, .shopping__delete *')){
+        //delete items
+        state.list.deleteItem(id);
+        listView.deleteItem(id);
+    }else if(e.target.matches('.shopping__count__input')){
+        // update items
+        const newValue = +e.target.value;
+        state.list.udpateItem(id, newValue);
+    }
+})
 
 elements.searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -98,5 +130,7 @@ elements.recipe.addEventListener('click', e => {
         // Increase BUtton
         state.recipe.updateServingIngredient('inc');
         recipeView.updateServingIngredient(state.recipe);
+    }else if(e.target.matches('.recipe__btn__add, .recipe__btn__add *')){
+        controlList();
     }
 })
