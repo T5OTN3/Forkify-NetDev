@@ -16,7 +16,7 @@ export const activeLinkStyle = (id) => {
     document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
 }
 
-const convertTitle = (title, limit = 17) => {
+export const convertTitle = (title, limit = 17) => {
     const newTitle = [];
     if(title.length > limit){
         title.split(' ').reduce((acc, cur) => {
